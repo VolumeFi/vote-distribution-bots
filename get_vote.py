@@ -2,7 +2,7 @@ import requests
 import sys
 
 URL_CURVE = "https://lockers.stakedao.org/api/strategies/cache/curve"
-URL_LOCKER = "https://lockers.stakedao.org/api/lockers/bribes"
+URL_POOL = "https://lockers.stakedao.org/api/lockers/bribes"
 
 def query(url):
     result = requests.get(url)
@@ -18,8 +18,8 @@ def find_best_apr_curve():
             best_gauge = k['name']
     return best_apr, best_gauge
 
-def find_best_apr_locker():
-    result = query(URL_LOCKER)
+def find_best_apr_pool():
+    result = query(URL_POOL)
     best_apr = 0
     best_gauge = None
     for k in result.json():
@@ -31,5 +31,5 @@ def find_best_apr_locker():
 if __name__ == '__main__':
     if len(sys.argv) == 1 or sys.argv[1] == 'curve':
         print(find_best_apr_curve())
-    elif sys.argv[1] == 'locker':
-        print(find_best_apr_locker())
+    elif sys.argv[1] == 'pool':
+        print(find_best_apr_pool())
