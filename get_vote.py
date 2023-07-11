@@ -13,11 +13,13 @@ def find_best_apr_curve():
     result = query(URL_CURVE)
     best_apr = 0
     best_gauge = None
+    best_gauge_address = None
     for k in result.json():
         if k['futureWeight'] > 0 and k['apr'] > best_apr:
             best_apr = k['apr']
             best_gauge = k['name']
-    return best_apr, best_gauge
+            best_gauge_address = k['infos']['sdtLiquidityGauge']
+    return best_apr, best_gauge, best_gauge_address
 
 def proportional_weight_curve(n_gauges = 5):
     result = query(URL_CURVE)
@@ -25,6 +27,7 @@ def proportional_weight_curve(n_gauges = 5):
     for k in result.json():
         if k['futureWeight'] > 0:
             df.loc[k['name'],'weight'] = k['futureWeight']
+            df.loc[k['name'],'address'] = k['infos']['sdtLiquidityGauge']
 
     df = df.sort_values('weight',ascending=False).head(n_gauges)
     df['weight'] = df['weight'] / df['weight'].sum()
@@ -46,6 +49,7 @@ def proportional_weight_pool(n_gauges = 5):
     for k in result.json():
         if k['futureWeight'] > 0:
             df.loc[k['name'],'weight'] = k['futureWeight']
+            df.loc[k['name'],'weight'] = k['address']
 
     df = df.sort_values('weight',ascending=False).head(n_gauges)
     df['weight'] = df['weight'] / df['weight'].sum()
